@@ -35,10 +35,10 @@ module.exports = (
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
         // both options are optional
-        filename: dev
+        filename: dev && 0 // # 开发环境生成的样式文件增加 hash
           ? 'static/css/[name].css'
           : 'static/css/[name].[contenthash:8].css',
-        chunkFilename: dev
+        chunkFilename: dev && 0 // # 开发环境生成的样式文件增加 hash
           ? 'static/css/[name].chunk.css'
           : 'static/css/[name].[contenthash:8].chunk.css'
       })
