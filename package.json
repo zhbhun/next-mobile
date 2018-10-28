@@ -40,7 +40,7 @@
       "git add"
     ]
   },
-  "peerDependencies": {
+  "dependencies": {
     "next": "7.0.2"
   },
   "devDependencies": {
