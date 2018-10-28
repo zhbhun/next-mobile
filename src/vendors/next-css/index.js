@@ -14,17 +14,34 @@ module.exports = (nextConfig = {}) => {
 
       options.defaultLoaders.css = cssLoaderConfig(config, {
         extensions: ['css'],
-        cssModules,
+        cssModules: false, // # 必须使用特殊的后缀才能开启 CSS Module，见下文配置
         cssLoaderOptions,
         postcssLoaderOptions,
         dev,
         isServer
       })
 
-      config.module.rules.push({
-        test: /\.css$/,
-        use: options.defaultLoaders.css
+      // # module.css 支持 CSS Module
+      options.defaultLoaders.mcss = cssLoaderConfig(config, {
+        // extensions: ['css'],
+        cssModules: true,
+        cssLoaderOptions,
+        postcssLoaderOptions,
+        dev,
+        isServer
       })
+
+      config.module.rules.push(
+        {
+          test: /\.css$/,
+          exclude: /\.module\.css$/, // # 排除 modul.css
+          use: options.defaultLoaders.css
+        },
+        {
+          test: /\.module\.css$/, // # module.css 支持 CSS Module
+          use: options.defaultLoaders.css
+        }
+      )
 
       if (typeof nextConfig.webpack === 'function') {
         return nextConfig.webpack(config, options)

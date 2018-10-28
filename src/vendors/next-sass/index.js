@@ -1,4 +1,4 @@
-const cssLoaderConfig = require('@zeit/next-css/css-loader-config')
+const cssLoaderConfig = require('../next-css/css-loader-config')
 
 module.exports = (nextConfig = {}) => {
   return Object.assign({}, nextConfig, {
@@ -19,7 +19,23 @@ module.exports = (nextConfig = {}) => {
 
       options.defaultLoaders.sass = cssLoaderConfig(config, {
         extensions: ['scss', 'sass'],
-        cssModules,
+        cssModules: false, // # 必须使用特殊的后缀才能开启 CSS Module，见下文配置
+        cssLoaderOptions,
+        postcssLoaderOptions,
+        dev,
+        isServer,
+        loaders: [
+          {
+            loader: 'sass-loader',
+            options: sassLoaderOptions
+          }
+        ]
+      })
+
+      // # module.scss 或 module.sass 支持 CSS Module
+      options.defaultLoaders.msass = cssLoaderConfig(config, {
+        // extensions: ['scss', 'sass'],
+        cssModules: true,
         cssLoaderOptions,
         postcssLoaderOptions,
         dev,
@@ -35,10 +51,20 @@ module.exports = (nextConfig = {}) => {
       config.module.rules.push(
         {
           test: /\.scss$/,
+          exclude: /\.module\.scss$/, // # 排除 modul.scss
           use: options.defaultLoaders.sass
         },
         {
+          test: /\.module\.scss$/, // # module.scss 支持 CSS Module
+          use: options.defaultLoaders.msass
+        },
+        {
           test: /\.sass$/,
+          exclude: /\.module\.sass$/, // # 排除 modul.sass
+          use: options.defaultLoaders.sass
+        },
+        {
+          test: /\.module\.sass$/, // # module.sass 支持 CSS Module
           use: options.defaultLoaders.sass
         }
       )
