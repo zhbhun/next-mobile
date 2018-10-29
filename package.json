@@ -46,13 +46,15 @@
     "extracted-loader": "1.0.4",
     "find-up": "2.1.0",
     "ignore-loader": "0.1.2",
+    "lodash": "^4.17.11",
     "mini-css-extract-plugin": "0.4.3",
     "next": "7.0.2",
     "next-compose-plugins": "^2.1.1",
     "next-images": "^1.0.1",
     "node-sass": "^4.7.2",
     "postcss-loader": "3.0.0",
-    "sass-loader": "6.0.6"
+    "sass-loader": "6.0.6",
+    "webpack-merge": "^4.1.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",

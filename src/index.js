@@ -1,27 +1,39 @@
+const merge = require('lodash/merge');
 const withPlugins = require('next-compose-plugins');
-const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 const withImages = require('next-images');
 const withCSS = require('../vendors/next-css');
 const withSass = require('../vendors/next-sass');
-const withResolve = require('./withResolve');
+const withNative = require('./withNative');
 
+const defaultConfig = require('./defaultConfig');
 /**
- * @param {Object} nextConfig
- * @param {Object} nextConfig.css @see https://github.com/zeit/next-plugins/tree/master/packages/next-css#usage
- * @param {Object} nextConfig.sass @see https://github.com/zeit/next-plugins/tree/master/packages/next-sass
- * @param {Object} nextConfig.images @see https://github.com/arefaslani/next-images#options
- * @param {Object} nextConfig.resolve @see https://webpack.js.org/configuration/resolve/#resolve
+ * @param {Object} config
+ * @param {String} config.distDir @see https://github.com/zeit/next.js/tree/7.0.2/#setting-a-custom-build-directory
+ * @param {String} config.assetPrefix @see https://github.com/arefaslani/next-images#assetprefix
+ * @param {Number} config.inlineImageLimit @see https://github.com/arefaslani/next-images#inlineimagelimit
+ * @param {String} config.cssLocalIdentName @see https://github.com/zeit/next-plugins/tree/master/packages/next-css#with-css-modules-and-options
+ * @param {Object|Function} config.native @see https://webpack.js.org/configuration/
+ * @param {Object} config.env 根据环境读取不同配置
+ * @param {Object} config.env.development
+ * @param {Object} config.env.production
  */
-module.exports = (nextConfig = {}) => {
+module.exports = (config = defaultConfig) => {
+  config =
+    config === defaultConfig ? defaultConfig : merge({}, defaultConfig, config);
+  const {
+    distDir,
+    assetPrefix,
+    inlineImageLimit,
+    cssLocalIdentName,
+    native,
+  } = merge({}, config, config.env[process.env.NODE_ENV]);
   return withPlugins(
     [
       [
         withImages,
         {
-          inlineImageLimit: 8192,
-          [PHASE_DEVELOPMENT_SERVER]: {
-            inlineImageLimit: 1,
-          },
+          assetPrefix,
+          inlineImageLimit,
         },
       ],
       [
@@ -30,12 +42,7 @@ module.exports = (nextConfig = {}) => {
           cssLoaderOptions: {
             url: true,
             import: false,
-            localIdentName: '[hash:base64:5]',
-          },
-          [PHASE_DEVELOPMENT_SERVER]: {
-            cssLoaderOptions: {
-              localIdentName: '[local]-[hash:base64:5]',
-            },
+            localIdentName: cssLocalIdentName,
           },
         },
       ],
@@ -45,21 +52,30 @@ module.exports = (nextConfig = {}) => {
           cssLoaderOptions: {
             url: true,
             import: false,
-            localIdentName: '[hash:base64:5]',
-          },
-          [PHASE_DEVELOPMENT_SERVER]: {
-            cssLoaderOptions: {
-              localIdentName: '[local]-[hash:base64:5]',
-            },
+            localIdentName: cssLocalIdentName,
           },
         },
       ],
-      [withResolve, nextConfig.resolve],
+      [withNative, { native }],
     ],
     {
-      distDir: '.next/development',
-      [PHASE_DEVELOPMENT_SERVER]: {
-        distDir: '.next/production',
+      distDir,
+      webpack(webpackConfig, options) {
+        if (!options.defaultLoaders) {
+          throw new Error(
+            'This plugin is not compatible with Next.js versions below 5.0.0 https://err.sh/next-plugins/upgrade'
+          );
+        }
+
+        const { isServer } = options;
+
+        // 解决有些移动端的应用根据 URL 缓存静态资源的问题
+        // https://github.com/zeit/next.js/blob/7.0.2/build/webpack.js#L198
+        webpackConfig.output.chunkFilename = isServer
+          ? ''.concat('[name].[contenthash]', '.js')
+          : 'static/chunks/'.concat('[name].[contenthash]', '.js');
+
+        return webpackConfig;
       },
     }
   );
