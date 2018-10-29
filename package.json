@@ -48,6 +48,8 @@
     "ignore-loader": "0.1.2",
     "mini-css-extract-plugin": "0.4.3",
     "next": "7.0.2",
+    "next-compose-plugins": "^2.1.1",
+    "next-images": "^1.0.1",
     "node-sass": "^4.7.2",
     "postcss-loader": "3.0.0",
     "sass-loader": "6.0.6"
