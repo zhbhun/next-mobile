@@ -22,7 +22,8 @@
     "node": ">= 6"
   },
   "files": [
-    "lib"
+    "lib",
+    "vendors"
   ],
   "main": "lib/index.js",
   "scripts": {
