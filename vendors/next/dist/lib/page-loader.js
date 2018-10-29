@@ -98,6 +98,9 @@ function () {
 
       route = this.normalizeRoute(route);
       var scriptRoute = route === '/' ? '/index.js' : "".concat(route, ".js");
+      if (process.env.NODE_ENV === 'development') {
+        scriptRoute += '?' + Date.now();
+      }
       var script = document.createElement('script');
       var url = "".concat(this.assetPrefix, "/_next/static/").concat(encodeURIComponent(this.buildId), "/pages").concat(scriptRoute);
       script.src = url;
