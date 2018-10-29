@@ -65,7 +65,7 @@ module.exports = (nextConfig = {}) => {
         },
         {
           test: /\.module\.sass$/, // # module.sass 支持 CSS Module
-          use: options.defaultLoaders.sass
+          use: options.defaultLoaders.msass
         }
       )
 

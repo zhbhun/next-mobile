@@ -39,7 +39,7 @@ module.exports = (nextConfig = {}) => {
         },
         {
           test: /\.module\.css$/, // # module.css 支持 CSS Module
-          use: options.defaultLoaders.css
+          use: options.defaultLoaders.mcss
         }
       )
 
