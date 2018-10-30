@@ -48,7 +48,7 @@
     "ignore-loader": "0.1.2",
     "lodash": "^4.17.11",
     "mini-css-extract-plugin": "0.4.3",
-    "next": "7.0.2",
+    "next": "https://github.com/zhbhun/next.js/releases/download/v7.0.3-beta.1/next-7.0.3-beta.1.tgz",
     "next-compose-plugins": "^2.1.1",
     "next-images": "^1.0.1",
     "node-sass": "^4.7.2",
@@ -62,7 +62,6 @@
     "@babel/preset-env": "^7.1.0",
     "eslint-config-ease-base": "^2.0.0",
     "lint-staged": "^7.3.0",
-    "next": "7.0.2",
     "prettier-config-ease": "^2.0.0",
     "rimraf": "^2.6.2"
   },
