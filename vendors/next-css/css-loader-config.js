@@ -65,6 +65,11 @@ module.exports = (
         config: postcssOptionsConfig
       })
     }
+  } else if (postcssLoaderOptions) {
+    postcssLoader = {
+      loader: 'postcss-loader',
+      options: postcssLoaderOptions,
+    };
   }
 
   const cssLoader = {
