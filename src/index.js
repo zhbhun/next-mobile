@@ -7,8 +7,8 @@ const withNative = require('./withNative');
 
 const defaultConfig = require('./defaultConfig');
 
-const postcssPlugins = ({ browsers }) => {
-  const plugins = [require('autoprefixer')({ browsers })];
+const postcssPlugins = () => {
+  const plugins = [require('autoprefixer')()];
   if (process.env.NODE_ENV !== 'development') {
     plugins.push(
       require('cssnano')({
@@ -25,7 +25,6 @@ const postcssPlugins = ({ browsers }) => {
  * @param {String} config.assetPrefix @see https://github.com/arefaslani/next-images#assetprefix
  * @param {Number} config.inlineImageLimit @see https://github.com/arefaslani/next-images#inlineimagelimit
  * @param {String} config.cssLocalIdentName @see https://github.com/zeit/next-plugins/tree/master/packages/next-css#with-css-modules-and-options
- * @param {Object|Function} config.targets @see https://github.com/browserslist/browserslist
  * @param {Object|Function} config.native @see https://webpack.js.org/configuration/
  * @param {Object} config.webpack
  * @param {Object} config.env 根据环境读取不同配置
@@ -40,13 +39,10 @@ module.exports = (config = defaultConfig) => {
     assetPrefix,
     inlineImageLimit,
     cssLocalIdentName,
-    targets,
     native,
   } = merge({}, config, config.env[process.env.NODE_ENV]);
   const postcssLoaderOptions = {
-    plugins: postcssPlugins({
-      browsers: targets.browsers,
-    }),
+    plugins: postcssPlugins(),
   };
   return withPlugins(
     [
