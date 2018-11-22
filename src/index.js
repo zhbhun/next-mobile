@@ -95,7 +95,8 @@ module.exports = (config = defaultConfig) => {
           : 'static/chunks/'.concat('[name].[contenthash]', '.js');
 
         // 为了解决移动端应用的静态资源缓存问题，开发环境给每个静态资源增加了时间戳，导致调试断点经常失效，采用 eval 方式的 sourcemap 不会单独生成 map 文件，可以解决该问题。
-        webpackConfig.devtool = webpackConfig.devtool ? 'eval' : false;
+        webpackConfig.devtool =
+          !isServer && webpackConfig.devtool ? 'eval' : false;
 
         if (typeof config.webpack === 'function') {
           return config.webpack(webpackConfig, options);
